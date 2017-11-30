@@ -40,6 +40,20 @@ function _init()
   y_min = 0
  }
  
+  projectiles_l = {}
+  projectiles_r = {}
+  projectiles_u = {}
+  projectiles_d = {}
+  
+  
+ -- for y=0, 64 do
+  -- for x=0, 128 do
+   -- if mget(x,y) == 20 then
+    -- mset(x,y,0)
+     --add_enemies(x,y)
+   -- end
+  -- end
+ -- end
 end
 
 
@@ -89,13 +103,13 @@ function _update()
 
 
  -- place tiles
- if (btnp(4)) then
-  mset(
-   player.celx,
-   player.cely,
-   7
-  )
- end
+-- if (btnp(4)) then
+ -- mset(
+ --  player.celx,
+ --  player.cely,
+ --  7
+ -- )
+-- end
 
 
  -- player animation
@@ -129,11 +143,221 @@ function _update()
   end
  end
 
-  
-  
- -- frame counter
- frame += 1 
+--shoot projectiles
+ if (btnp(4)) then
+  if player.astate == 2 then
+  add_projectiles_l(
+   player.x,
+   player.y
+  )
+  end
+ end
+ if (btnp(4)) then
+  if player.astate == 3 then
+   add_projectiles_r(
+   player.x,
+   player.y
+  )
+  end
+ end
+ if (btnp(4)) then
+  if player.astate == 4 then
+   add_projectiles_u(
+   player.x,
+   player.y
+  )
+  end
+ end
+ if (btnp(4)) then
+  if player.astate == 1 then
+   add_projectiles_d(
+   player.x,
+   player.y
+  )
+  end
+ end
+
  
+-- move projectiles left
+ for laser in all(projectiles_l) do
+ -- move laser
+  laser.x += laser.vx
+ end 
+ 
+ -- move projectiles right
+ for laser in all(projectiles_r) do
+ -- move laser
+  laser.x += laser.vx
+ end 
+ 
+  -- move projectiles up
+ for laser in all(projectiles_u) do
+ -- move laser
+  laser.y += laser.vy
+ end 
+ 
+  -- move projectiles down
+ for laser in all(projectiles_d) do
+ -- move laser
+  laser.y += laser.vy
+ end 
+ 
+--enemie animation
+for e in all(enemies) do
+ -- increment frame every second
+ if (frame%e.fdur == 0) then 
+  -- next frame
+  e.sindex += 1
+   
+   -- loop frames
+   if (e.sindex > #e.frames) then
+    e.sindex = 1
+   end   
+  end
+end
+
+--projectile animation
+--left
+for laser in all(projectiles_l) do
+ -- increment frame every second
+ if (frame%laser.fdur == 0) then 
+  -- next frame
+  laser.sindex += 1
+   
+   -- loop frames
+   if (laser.sindex > #laser.frames) then
+    laser.sindex = 1
+   end   
+  end
+end
+
+--right
+for laser in all(projectiles_r) do
+ -- increment frame every second
+ if (frame%laser.fdur == 0) then 
+  -- next frame
+  laser.sindex += 1
+   
+   -- loop frames
+   if (laser.sindex > #laser.frames) then
+    laser.sindex = 1
+   end   
+  end
+end
+
+--up
+for laser in all(projectiles_u) do
+ -- increment frame every second
+ if (frame%laser.fdur == 0) then 
+  -- next frame
+  laser.sindex += 1
+   
+   -- loop frames
+   if (laser.sindex > #laser.frames) then
+    laser.sindex = 1
+   end   
+  end
+end
+
+--down
+for laser in all(projectiles_d) do
+ -- increment frame every second
+ if (frame%laser.fdur == 0) then 
+  -- next frame
+  laser.sindex += 1
+   
+   -- loop frames
+   if (laser.sindex > #laser.frames) then
+    laser.sindex = 1
+   end   
+  end
+end
+ 
+function add_projectiles_l(_x, _y)
+ local p = {
+  x  = _x,
+  y  = _y,
+  vy =  0,
+  vx = -3,
+  w  =  1,
+  h  =  3,
+  c  = 12,
+  frames = {25,26},
+  sindex = 1,
+  fdur = flr(rnd(20))+5
+ }
+ 
+ add(projectiles_l, p)
+end
+
+function add_projectiles_r(_x, _y)
+ local p = {
+  x  = _x,
+  y  = _y,
+  vy =  0,
+  vx =  3,
+  w  =  1,
+  h  =  3,
+  c  = 12,
+  frames = {41,42},
+  sindex = 1,
+  fdur = flr(rnd(20))+5
+ }
+ 
+ add(projectiles_r, p)
+end
+
+function add_projectiles_u(_x, _y)
+ local p = {
+  x  = _x,
+  y  = _y,
+  vy = -3,
+  vx =  0,
+  w  =  1,
+  h  =  3,
+  c  = 12,
+  frames = {9, 10},
+  sindex = 1,
+  fdur = flr(rnd(20))+5
+ }
+ 
+ add(projectiles_u, p)
+end
+
+function add_projectiles_d(_x, _y)
+ local p = {
+  x  = _x,
+  y  = _y,
+  vy =  3,
+  vx =  0,
+  w  =  1,
+  h  =  3,
+  c  = 12,
+  frames = {57,58},
+  sindex = 1,
+  fdur = flr(rnd(20))+5
+ }
+ 
+ add(projectiles_d, p)
+end
+
+
+function add_enemy(_x, _y)
+ local e = {
+  x  = _x,
+  y  = _y,
+  vy =  2,
+  frames = {17, 33},
+  sindex = 1,
+  fdur = flr(rnd(20))+5
+ }
+ 
+ add(enemies, e)
+end
+
+-- frame counter
+frame += 1 
+
 end
 
 
@@ -159,6 +383,43 @@ function _draw()
   player.x - 3,
   player.y - 6
  )
+ 
+ -- projectiles
+ for laser in all(projectiles_l) do
+  -- laser = projectiles[i]
+    spr(
+   laser.frames[laser.sindex],
+   laser.x,
+   laser.y
+  )
+ end
+ 
+ for laser in all(projectiles_r) do
+  -- laser = projectiles[i]
+    spr(
+   laser.frames[laser.sindex],
+   laser.x,
+   laser.y
+  )
+ end
+ 
+ for laser in all(projectiles_u) do
+  -- laser = projectiles[i]
+  spr(
+   laser.frames[laser.sindex],
+   laser.x,
+   laser.y
+  )
+ end
+ 
+ for laser in all(projectiles_d) do
+  -- laser = projectiles[i]
+    spr(
+   laser.frames[laser.sindex],
+   laser.x,
+   laser.y
+  )
+ end
  
  draw_debug_player()
  
