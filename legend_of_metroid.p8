@@ -1,9 +1,9 @@
 pico-8 cartridge // http://www.pico-8.com
 version 8
 __lua__
--- pico8 animation + maps
--- utz stauder
--- v2
+-- legend of metroid
+-- daniel + malte
+-- v0.1
 
 
 function _init()
@@ -25,7 +25,8 @@ function _init()
   },
   sindex = 1,
   astate = 1,
-  fdur   = 5
+  fdur   = 5,
+  hp					= 100
  }
  
  cam = {
@@ -98,6 +99,17 @@ function _update()
  end
 
 
+ -- spike collision
+ if fget(mget(player.celx,player.cely),0) == true then
+  player.hp -= 10
+  if player.hp < 0 then
+   player.hp = 0
+  end
+ end
+        
+             
+
+
  -- frame counter
  frame += 1 
  
@@ -161,6 +173,7 @@ function draw_debug_player()
  )
  end
  
+ print("hp: "..player.hp,5,5,14)
 end
 _gfx__
 00000000005555000055550000555500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
