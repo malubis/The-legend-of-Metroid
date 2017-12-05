@@ -36,7 +36,8 @@ function _init()
   fdur   = 4,
   prex = 64,
   prey = 64,
-  hp  = 100
+  hp  = 99, 
+  holdstate = 1
  }
  
  for i = 0, 100  do
@@ -85,16 +86,16 @@ update_playermovement()
  
  
  -- place tiles
- if (btnp(4)) then
+ --if (btnp(4)) then
  -- mset(
  --  player.celx,
   -- player.cely,
  --  7
  -- )
-  add_corpse
-   (player.x+10,
-    player.y+10)
- end
+ -- add_corpse
+  -- (player.x+10,
+  --  player.y+10)
+-- end
  
  
  -- player animation
@@ -128,7 +129,7 @@ update_playermovement()
  end
  
  --shoot projectiles
- if (btnp(4)) then
+ if (btnp(5)) then
   if player.astate == 2 then
   add_projectiles_l(
    player.x,
@@ -136,7 +137,7 @@ update_playermovement()
   )
   end
  end
- if (btnp(4)) then
+ if (btnp(5)) then
   if player.astate == 3 then
    add_projectiles_r(
    player.x,
@@ -144,7 +145,7 @@ update_playermovement()
   )
   end
  end
- if (btnp(4)) then
+ if (btnp(5)) then
   if player.astate == 4 then
    add_projectiles_u(
    player.x,
@@ -152,7 +153,7 @@ update_playermovement()
   )
   end
  end
- if (btnp(4)) then
+ if (btnp(5)) then
   if player.astate == 1 then
    add_projectiles_d(
    player.x,
@@ -344,10 +345,30 @@ function _draw()
   )
  end
  
- --draw_debug_player()
+ 
+        
+ 
  
  draw_raindrops()
  
+ --lifebar
+ rectfill (0-64+cam.x,
+           122-64+cam.y,
+           128-64+cam.x,
+           128-64+cam.y,
+           0)           
+ print (player.hp, 
+        105-64+cam.x,
+        123-64+cam.y,
+        10) 
+               
+ rectfill (2-64+cam.x,
+           123-64+cam.y,
+           player.hp-64+cam.x,
+           124-64+cam.y,
+           10)
+           
+ --draw_debug_player()
  --draw_debug_anim()
 end
  
@@ -470,9 +491,28 @@ end
 function update_playermovement()
 player.prex=player.x
 player.prey=player.y
+player.holdstate = player.astate
   
  -- player movement
  -- and animation state
+ if (btn(2)) then
+  player.y -= player.vy_u
+  player.astate = 4
+  if fget(mget(player.celx,player.cely-1),0) == true then
+   player.vy_u = 0
+   else
+   player.vy_u = 1
+  end
+ elseif (btn(3)) then
+  player.y += player.vy_d
+  player.astate = 1
+  if fget(mget(player.celx,player.cely+1),0) == true then
+   player.vy_d = 0
+   else
+   player.vy_d = 1
+  end
+ end
+ 
  if (btn(0)) then
   player.x -= player.vx_l
   player.astate = 2
@@ -491,22 +531,10 @@ player.prey=player.y
   end
  end
  
- if (btn(2)) then
-  player.y -= player.vy_u
-  player.astate = 4
-  if fget(mget(player.celx,player.cely-1),0) == true then
-   player.vy_u = 0
-   else
-   player.vy_u = 1
-  end
- elseif (btn(3)) then
-  player.y += player.vy_d
-  player.astate = 1
-  if fget(mget(player.celx,player.cely+1),0) == true then
-   player.vy_d = 0
-   else
-   player.vy_d = 1
-  end
+ 
+ 
+ if (btn(4)) then
+  player.astate = player.holdstate
  end
  
  if player.x != player.prex or
@@ -583,9 +611,9 @@ function add_projectiles_l(_x, _y)
   w  =  1,
   h  =  3,
   c  = 12,
-  frames = {20,20},
+  frames = {16,20},
   sindex = 1,
-  fdur = flr(rnd(20))+5
+  fdur = 1
  }
  
  add(projectiles_l, p)
@@ -600,9 +628,9 @@ function add_projectiles_r(_x, _y)
   w  =  1,
   h  =  3,
   c  = 12,
-  frames = {20,21},
+  frames = {16,20},
   sindex = 1,
-  fdur = flr(rnd(20))+5
+  fdur = 1
  }
  
  add(projectiles_r, p)
@@ -617,9 +645,9 @@ function add_projectiles_u(_x, _y)
   w  =  1,
   h  =  3,
   c  = 12,
-  frames = {5, 5},
+  frames = {16, 4},
   sindex = 1,
-  fdur = flr(rnd(20))+5
+  fdur = 1
  }
  
  add(projectiles_u, p)
@@ -634,9 +662,9 @@ function add_projectiles_d(_x, _y)
   w  =  1,
   h  =  3,
   c  = 12,
-  frames = {4,4},
+  frames = {16,4},
   sindex = 1,
-  fdur = flr(rnd(20))+5
+  fdur = 1
  }
  
  add(projectiles_d, p)
@@ -658,19 +686,19 @@ end
 
 
 __gfx__
-0000000000444400004444000044440000000000000000900000000013131b133d33d3d333d3d3dd3d333333ddddddd3dd3ddd3d13131b1313131b1300000000
-0000000000fff40000fff40000fff40000000000000000a000000000b11313113d33333333333dd3dd3ddd33ddd3dd3d3dddddddb2121311b113122100000000
+00000000004444000044440000444400a0000000000000000000000013131b133d33d3d333d3d3dd3d333333ddddddd3dd3ddd3d13131b1313131b1300000000
+0000000000fff40000fff40000fff400a00000000000000000000000b11313113d33333333333dd3dd3ddd33ddd3dd3d3dddddddb2121311b113122100000000
 0070070000cfcf0000cfcf0000cfcf000000000000000000000000003111311113333331333ddddd3dddd33333dd33dddddd6663321232212111321200000000
 0007700006ffff6006ffff6006ffff600000000000000000000000003111311131113111333dd33dd3dddd33dd3dd3dddd6d565d212132112111322100000000
-000770000f5666f00f5666f00f5666f000a00000000000000000000013131b131b131b1333ddddddddddd3333dd333d3d6626663231212231213121300000000
-007007000f5ffff00f5ffff00f5ffff00090000000000000000000001313131313131313333ddd3333ddd3333333333332322d22131212131223211300000000
+000770000f5666f00f5666f00f5666f000000000000000000000000013131b131b131b1333ddddddddddd3333dd333d3d6626663231212231213121300000000
+007007000f5ffff00f5ffff00f5ffff00000000000000000000000001313131313131313333ddd3333ddd3333333333332322d22131212131223211300000000
 0000000000111100001111000011110000000000000000000000000011b1113111b1113133ddd3ddddd33333d333333dddd323dd11b1112111b1113100000000
 00000000001001000010001001000100000000000000000000000000d131111d11311131333333dddd3d3d33ddddddddddd3dd3dd131111dd131111d00000000
-00000000000444400004444000044440000000000000000000000000dddddddddd3d113133d33333111ddd3d13131b13ddd3dd3d333333333d3333d300000000
+90000000000444400004444000044440aa0000000000000000000000dddddddddd3d113133d33333111ddd3d13131b13ddd3dd3d333333333d3333d300000000
 00000000000f4440000f4440000f4440000000000000000000000000ddd3dddddd3dd111333ddd331113d3ddb1131311dd3ddd3d333333333333333300000000
 00000000000cf440000cf440000cf440000000000000000000000000dd3d3d3dddd3dd113333333311d3d3dd31113111656ddddd33dd3dd3d311113300000000
 00000000506ff466506ff466506ff466000000000000000000000000d3ddddd3dddddd1133d3d3331ddddddd31013111666d6d63d3d33d333100001300000000
-000000005566666f5566666f5566666f00000aa99aa0000000000000dd3dddd3ddddddd13333dd331ddddddd10131b136566266233d3dd3d3000000300000000
+000000005566666f5566666f5566666f000000000000000000000000dd3dddd3ddddddd13333dd331ddddddd10131b136566266233d3dd3d3000000300000000
 000000000ff6666f0ff6666f0ff6666f000000000000000000000000dd3ddd3ddddddd3d333d3333dd3dd3dd01030310d22d22d3dddddd33d000000300000000
 00000000000111100001111000011110000000000000000000000000dddd3ddddd3ddd3d33d3dd33dd3ddd3d101011013d3dd23d3d3ddd3d3300003300000000
 00000000000100100001000100001010000000000000000000000000ddd3ddddddd3d3dd33333333ddd3d3dd00010010ddd3d3ddddd3d3ddd33d33d300000000
