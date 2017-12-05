@@ -671,17 +671,67 @@ function add_projectiles_d(_x, _y)
 end
 
 
-function add_enemy(_x, _y)
- local e = {
-  x  = _x,
-  y  = _y,
-  vy =  2,
-  frames = {17, 33},
-  sindex = 1,
-  fdur = flr(rnd(20))+5
- }
+function add_enemy(_x, _y, t)
+ if t == 0 then
+  local e = { --treeguy
+   x  = _x,
+   y  = _y,
+   lifepoints = 10,
+   sprite = 64,
+   astate = 4
+  }
+ end
  
+ if t == 1 then
+  local e = { --bat
+   x  = _x,
+   y  = _y,
+   vx = 2,
+   vy = 2,
+   lifepoints = 20,
+   sprite = 66,
+   astate = 1
+  }
+ end
+  
+  if t == 2 then
+   local e = { -- ghost
+    x  = _x, 
+    y  = _y, 
+    vx = 2,
+    vy = 2,
+    lifepoints = 20,
+    sprite = 98,
+    astate = 1 
+    }
+  end
+  
+  if t == 3 then
+   local e = { -- wallmaster
+    x = _x,
+    y = _y,
+    vy = 3,
+    lifepoints = 30,
+    sprite = 84,
+    astate = 1
+    }
+  end
+  
+  if t == 4 then
+   local e = { -- spawner
+    x = _x,
+    y = _y,
+    bx = _x,
+    by = _y,
+    bvx = 2,
+    bvy = 2,
+    sprite = 69,
+    frames = {85, 86, 87, 88}
+   }
+  end
+  
  add(enemies, e)
+ 
 end
 
 
