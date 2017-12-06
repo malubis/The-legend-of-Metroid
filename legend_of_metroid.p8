@@ -320,11 +320,18 @@ function _draw()
  
  -- player
  
+ if btn (0) or btn (1) or
+    btn (2) or btn (3) then
  spr(
   player.aframes[player.astate][player.sindex],
   player.x - 3,
   player.y - 6
- )
+ ) else
+ spr(
+  player.aframes[player.astate][1],
+  player.x - 3,
+  player.y - 6)
+ end
  
  
  --lighting
@@ -837,12 +844,6 @@ function playerattack ()
 
 for p in all(projectiles_l) do
  
-  -- laser out of view?
-  if (p.y + p.h < 0) then
-   del(projectiles_l, p)
-  end
-  
-  
   for e in all(enemies) do
    
    -- enemy collision
